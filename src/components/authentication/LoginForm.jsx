@@ -21,7 +21,7 @@ const LoginForm = ({ registerPath, resetPath }) => {
       },
     };
     const response = await axios.post(
-      process.env.VITE_BASE_API_URL+"/user/login",
+      "https://crm-backend-bxsr.onrender.com/user/login",
       formData,
       config
     );
