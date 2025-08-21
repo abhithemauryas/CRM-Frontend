@@ -25,7 +25,7 @@ const ProposalTable = () => {
 
   const fetchProposal=async()=>{
     try {
-      const {data} = await axios.get(process.env.VITE_BASE_API_URL+"/proposal/find/all")
+      const {data} = await axios.get("https://crm-backend-bxsr.onrender.com/proposal/find/all")
       const fetched = data.proposals
       // pull | fetch krte time koi new changes nhi rhne chahiye file me apne side se
          // yha pr format ho rha hai 

@@ -97,7 +97,7 @@ const LeadsCreateContent = () => {
         assigned.map((a) => a.value)
       );
       const response = await axios.post(
-        process.env.VITE_BASE_API_URL + "/lead/create",
+       "https://crm-backend-bxsr.onrender.com/lead/create",
         formData,
         config
       );
@@ -151,7 +151,7 @@ const LeadsCreateContent = () => {
     try {
       setExcelUploadLoading(true);
       const response = await axios.post(
-        process.env.VITE_BASE_API_URL+"/lead/import-excel",
+        "https://crm-backend-bxsr.onrender.com/lead/import-excel",
         formData,
         {
           headers: {

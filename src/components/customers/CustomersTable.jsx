@@ -36,7 +36,7 @@ const CustomersTable = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get(process.env.VITE_BASE_API_URL+"/find/customer");
+      const response = await axios.get("https://crm-backend-bxsr.onrender.com/find/customer");
       const fetched = response.data.customers;
         console.log("Fetched customers:", fetched);
 

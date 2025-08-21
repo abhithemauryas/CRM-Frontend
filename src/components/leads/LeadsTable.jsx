@@ -31,7 +31,7 @@ const actions = [
 ];
 
 const updateStatus =  async (option, id) => {
-  const {data} = await axios.get(`${process.env.VITE_BASE_API_URL}/lead-status/${id}/${option.value}`);
+  const {data} = await axios.get(`https://crm-backend-bxsr.onrender.com/lead-status/${id}/${option.value}`);
 }
 
 const TableCell = memo(({ id, options, defaultSelect }) => {
@@ -58,7 +58,7 @@ const LeadssTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(process.env.VITE_BASE_API_URL+"/lead/all");
+        const res = await axios.get("https://crm-backend-bxsr.onrender.com/lead/all");
         console.log("API Response:", res.data);
 
         const formattedData = res.data.leads.map((item, index) => {

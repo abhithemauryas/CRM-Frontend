@@ -10,7 +10,7 @@ const TabLeadsProfile = () => {
 
     const fetchLeadProfile = async () => {
         try {
-            const response = await axios.get(`${process.env.VITE_BASE_API_URL}/lead/${id}`);
+            const response = await axios.get(`https://crm-backend-bxsr.onrender.com/lead/${id}`);
             setData(response.data.lead);
             console.log("Profile data:", response.data.lead);
         } catch (error) {

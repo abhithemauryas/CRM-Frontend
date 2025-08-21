@@ -20,7 +20,7 @@ const Profile = () => {
   });
   const fetchCustomerProfile = async () => {
     try {
-      const response = await axios.get(`${process.env.VITE_BASE_API_URL}/customer/${id}`);
+      const response = await axios.get(`https://crm-backend-bxsr.onrender.com/customer/${id}`);
       const customer = response.data.customer;
       setData(customer);
       setFormData({
@@ -53,7 +53,7 @@ const Profile = () => {
               "Authorization": "Bearer " + localStorage.getItem('crmToken')
           },    
         }
-     const res= await axios.delete(`${process.env.VITE_BASE_API_URL}/customer/delete/${id}`,config);
+     const res= await axios.delete(`https://crm-backend-bxsr.onrender.com/customer/delete/${id}`,config);
        await Swal.fire({
        title: "Deleted!",
      text: res.data.message,
@@ -191,7 +191,7 @@ const Profile = () => {
         className="w-50 btn btn-success"
         onClick={async () => {
           try {
-            await axios.put(`${process.env.VITE_BASE_API_URL}/customer/${id}`, formData);
+            await axios.put(`https://crm-backend-bxsr.onrender.com/customer/${id}`, formData);
             setEditMode(false);
             fetchCustomerProfile(); // Update fresh data
           } catch (error) {

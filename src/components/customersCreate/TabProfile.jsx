@@ -81,7 +81,7 @@ const TabProfile = () => {
               "Authorization": "Bearer " + localStorage.getItem('crmToken')
           },    
         }
-    const response = await axios.post(process.env.VITE_BASE_API_URL+"/customer/create",formData, config)
+    const response = await axios.post("https://crm-backend-bxsr.onrender.com/customer/create",formData, config)
     response.data.customer && console.log("Customer created successfully:");
     console.log(response.data.customer);
     topTost(response?.data?.message || "Customer created successfully!","success");

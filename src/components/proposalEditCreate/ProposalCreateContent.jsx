@@ -104,7 +104,7 @@ const ProposalCreateContent = () => {
       };
       console.log("form data header",formData )
       const response = await axios.post(
-        process.env.VITE_BASE_API_URL+"/proposal/create",
+        "https://crm-backend-bxsr.onrender.com/proposal/create",
         formData,
         config
       );
