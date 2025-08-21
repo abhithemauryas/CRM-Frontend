@@ -34,7 +34,7 @@ const RegisterForm = ({ path }) => {
           "Content-Type": "application/json",
         },
       };
-      const response = await axios.post(process.env.VITE_BASE_API_URL+ "/user/register", formData, config);
+      const response = await axios.post("https://crm-backend-bxsr.onrender.com/user/register", formData, config);
       console.log("Response from registration:", response.data);
       response.data;
       console.log("User registered successfully:", response.data);
