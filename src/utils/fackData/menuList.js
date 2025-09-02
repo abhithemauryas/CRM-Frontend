@@ -108,18 +108,18 @@ export const menuList = [
                 path: "/proposal/list",
                 subdropdownMenu: false
             },
-            {
-                id: 2,
-                name: "Proposal View",
-                path: "/proposal/view",
-                subdropdownMenu: false
-            },
-            {
-                id: 3,
-                name: "Proposal Edit",
-                path: "/proposal/edit",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 2,
+            //     name: "Proposal View",
+            //     path: "/proposal/view",
+            //     subdropdownMenu: false
+            // },
+            // {
+            //     id: 3,
+            //     name: "Proposal Edit",
+            //     path: "/proposal/edit",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 4,
                 name: "Proposal Create",
@@ -366,7 +366,7 @@ export const menuList = [
             {
                 id: 1,
                 name: "login",
-                path: "#",
+                path: "/authentication/login/creative",
                 subdropdownMenu: [
                     // {
                     //     id: 1,
@@ -388,7 +388,7 @@ export const menuList = [
             {
                 id: 2,
                 name: "register",
-                path: "#",
+                path: "/authentication/register/creative",
                 subdropdownMenu: [
                     // {
                     //     id: 1,

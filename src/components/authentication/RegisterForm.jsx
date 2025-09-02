@@ -14,7 +14,24 @@ const RegisterForm = ({ path }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-    const navigate =useNavigate();
+  const [passwordStrength, setPasswordStrength] = useState("");
+  const navigate = useNavigate();
+
+
+  const checkPasswordStrength = (pass) => {
+  if (!pass) return "";
+  
+  if (pass.length < 5) {
+    return "Weak";
+  }
+
+  if (/[A-Z]/.test(pass) && /[0-9]/.test(pass) && /[^A-Za-z0-9]/.test(pass)) {
+    return "Strong";
+  }
+
+  return "Medium";
+};
+
 
   const fetchUser = async () => {
     try {
@@ -126,38 +143,76 @@ const RegisterForm = ({ path }) => {
           </select>
         </div>
 
-        <div className="mb-4 generate-pass">
-          <div className="input-group field">
-            <input
-              type="password"
-              className="form-control password"
-              id="newPassword"
-              placeholder="Password Confirm"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <div
-              className="input-group-text c-pointer gen-pass"
-              data-bs-toggle="tooltip"
-              title="Generate Password"
-            >
-              <FiHash size={16} />
-            </div>
-            <div
-              className="input-group-text border-start bg-gray-2 c-pointer"
-              data-bs-toggle="tooltip"
-              title="Show/Hide Password"
-            >
-              <FiEye size={16} />
-            </div>
-          </div>
-          <div className="progress-bar mt-2">
-            <div />
-            <div />
-            <div />
-            <div />
-          </div>
-        </div>
+     <div className="mb-4 generate-pass">
+  <div className="input-group field">
+    <input
+      type={showPassword ? "text" : "password"}
+      className="form-control password"
+      id="newPassword"
+      placeholder="Password"
+      value={password}
+      onChange={(e) => {
+        setPassword(e.target.value);
+        setPasswordStrength(checkPasswordStrength(e.target.value));
+      }}
+      required
+    />
+    <div
+      className="input-group-text c-pointer gen-pass"
+      data-bs-toggle="tooltip"
+      title="Generate Password"
+    >
+      <FiHash size={16} />
+    </div>
+    <div
+      className="input-group-text border-start bg-gray-2 c-pointer"
+      data-bs-toggle="tooltip"
+      title="Show/Hide Password"
+      onClick={() => setShowPassword(!showPassword)} // ✅ toggle
+    >
+      <FiEye size={16} />
+    </div>
+  </div>
+
+  {/* ✅ Password Strength Progress Bar */}
+  {password && (
+    <>
+      <div className="progress mt-2" style={{ height: "6px" }}>
+        <div
+          className={`progress-bar ${
+            passwordStrength === "Weak"
+              ? "bg-danger"
+              : passwordStrength === "Medium"
+              ? "bg-warning"
+              : "bg-success"
+          }`}
+          role="progressbar"
+          style={{
+            width:
+              passwordStrength === "Weak"
+                ? "33%"
+                : passwordStrength === "Medium"
+                ? "66%"
+                : "100%",
+          }}
+        />
+      </div>
+      <small
+        style={{
+          color:
+            passwordStrength === "Weak"
+              ? "red"
+              : passwordStrength === "Medium"
+              ? "orange"
+              : "green",
+        }}
+      >
+        Strength: {passwordStrength}
+      </small>
+    </>
+  )}
+</div>
+
         <div className="mb-4">
           <input
             type="password"

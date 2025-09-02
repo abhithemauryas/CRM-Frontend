@@ -1,53 +1,95 @@
-import React, { useEffect, useState } from 'react'
-import Table from '@/components/shared/table/Table'
-import { FiAlertOctagon, FiArchive, FiClock, FiEdit3, FiEye, FiMoreHorizontal, FiPrinter, FiSend, FiTrash2 } from 'react-icons/fi'
-import Dropdown from '@/components/shared/Dropdown';
-import { Link } from 'react-router-dom';
-import { proposalTableData } from '@/utils/fackData/proposalTableData';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Table from "@/components/shared/table/Table";
+import {
+  FiAlertOctagon,
+  FiArchive,
+  FiClock,
+  FiEdit3,
+  FiEye,
+  FiMoreHorizontal,
+  FiPrinter,
+  FiSend,
+  FiTrash2,
+} from "react-icons/fi";
+import Dropdown from "@/components/shared/Dropdown";
+import { Link } from "react-router-dom";
+import { proposalTableData } from "@/utils/fackData/proposalTableData";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { confirmDelete } from "@/utils/confirmDelete";
+import Swal from "sweetalert2";
 
-
-const actions = [
-  { label: "Edit", icon: <FiEdit3 /> },
-  { label: "Print", icon: <FiPrinter /> },
-  { label: "Remind", icon: <FiClock /> },
-  { type: "divider" },
-  { label: "Archive", icon: <FiArchive /> },
-  { label: "Report Spam", icon: <FiAlertOctagon />, },
-  { type: "divider" },
-  { label: "Delete", icon: <FiTrash2 />, },
-];
-
+// const actions = [
+//   { label: "Edit", icon: <FiEdit3 /> },
+//   { label: "Print", icon: <FiPrinter /> },
+//   { label: "Remind", icon: <FiClock /> },
+//   { type: "divider" },
+//   { label: "Archive", icon: <FiArchive /> },
+//   { label: "Report Spam", icon: <FiAlertOctagon /> },
+//   { type: "divider" },
+//   { label: "Delete", icon: <FiTrash2 /> },
+// ];
 
 const ProposalTable = () => {
   // const [proposalTableData, setproposalTableData] = useState([])
-  const [proposalTableData, setProposalTableData] = useState([]);
+  const [proposalTableData, setProposalTableData] = useState([]); 
+  const navigate=useNavigate()
 
-  const fetchProposal=async()=>{
+
+  const actions = [
+    
+    { 
+      label: "Edit", 
+      icon: <FiEdit3 />, 
+      onClick: (row) => navigate(`/proposal/edit/${row.proposal}`) // 👈 id ke sath navigate
+      
+    },
+    { label: "Print", icon: <FiPrinter /> },
+    { label: "Remind", icon: <FiClock /> },
+    { type: "divider" },
+    { label: "Archive", icon: <FiArchive /> },
+    { label: "Report Spam", icon: <FiAlertOctagon /> },
+    { type: "divider" },
+    { label: "Delete", icon: <FiTrash2 /> ,
+      onClick:(row)=>deleteProposal(row.proposal,setProposalTableData)
+    },
+  ];
+   
+
+  const fetchProposal = async () => {
     try {
-      const {data} = await axios.get("https://crm-backend-bxsr.onrender.com/proposal/find/all")
-      const fetched = data.proposals
+      const { data } = await axios.get(
+        "https://crm-backend-bxsr.onrender.com/proposal/find/all"
+      );
+      const fetched = data.proposals;
       // pull | fetch krte time koi new changes nhi rhne chahiye file me apne side se
-         // yha pr format ho rha hai 
-     const formattedData = fetched.map((row,index)=>({
-  id: index + 1,
-  proposal: row._id,
-  client: {
-    name: row.clientName || "Unknown",
-    email: row.clientEmail || "",
-    img: "/images/avatar/1.png"
-  },
-  subject: row.subject || "—",
-  amount: `$${(row.items || []).reduce((acc,curr)=>acc+(curr.price*curr.qty),0)} USD`,
-  date: row.created_at 
-    ? new Date(row.created_at).toLocaleString("en-IN",{ dateStyle:"medium", timeStyle:"short" }) 
-    : "—",
-  status : {
-    content: row.status || "Draft",
-    color: "bg-soft-success text-success"
-  }
-}));
-
+      // yha pr format ho rha hai
+      const formattedData = fetched.map((row, index) => ({
+        id: index + 1,
+        proposal: row._id,
+          proposalNumber: row.proposalNumber || `#${1000 + index}`, // 👈 user-friendly display
+        client: {
+          _id: row.clientId?._id || row.clientId || "", // 👈 include client’s Mongo ID
+          name: row.clientName || "Unknown",
+          email: row.clientEmail || "",
+          img: "/images/avatar/1.png",
+        },
+        subject: row.subject || "—",
+        amount: `$${(row.items || []).reduce(
+          (acc, curr) => acc + curr.price * curr.qty,
+          0
+        )} USD`,
+        date: row.created_at
+          ? new Date(row.created_at).toLocaleString("en-IN", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })
+          : "—",
+        status: {
+          content: row.status || "Draft",
+          color: "bg-soft-success text-success",
+        },
+      }));
 
       /*
         ISSI format me arrange krna hai backend ka data
@@ -68,24 +110,59 @@ const ProposalTable = () => {
               "color": "bg-soft-success text-success"
           } 
         }      
-      */ 
+      */
       // setproposalData(formattedData);
-      console.log(formattedData)
+      console.log(formattedData);
       setProposalTableData(formattedData);
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-   
+  };
+
   useEffect(() => {
     fetchProposal();
   }, []);
 
+const deleteProposal=async(proposal)=>{
+  const result =await confirmDelete(proposal)
+  if(!result.confirmed) return
+  try {
+    const config={
+      headers:{
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("crmToken"),
+    },
+    }
+    await axios.delete(`https://crm-backend-bxsr.onrender.com/proposal/delete/${proposal}`,config)
+    setProposalTableData(prevData=>prevData.filter(item=>item._id!==proposal))
+    await fetchProposal()
+     Swal.fire({
+      title: "Deleted!",
+      text: "The customer has been deleted successfully.",
+      icon: "success",
+      customClass:{
+       confirmButton: "btn btn-success",
+       cancelButton: "btn btn-danger"
+      }
+    })
+    await fetchProposal()
+  } catch (error) {
+     console.error("Error deleting lead", error);
+     Swal.fire({
+      title: "Error!",
+      text: error?.response?.data?.message || "Error deleting lead",
+      icon: "error",
+      customClass: {
+        confirmButton: "btn btn-danger",
+      },
+    });
+  }
+}
+
 
   const columns = [
     {
-      accessorKey: 'id',
+      accessorKey: "id",
       header: ({ table }) => {
         const checkboxRef = React.useRef(null);
 
@@ -115,85 +192,116 @@ const ProposalTable = () => {
         />
       ),
       meta: {
-        headerClassName: 'width-30',
+        headerClassName: "width-30",
       },
     },
 
-
     {
-      accessorKey: 'proposal',
-      header: () => 'Proposal',
-      cell: (info) => <a href='#' className='fw-bold'>{info.getValue()}</a>
+      accessorKey: "proposalNumber",
+      header: () => "Proposal",
+      cell: (info) => (
+        <a href="#" className="fw-bold">
+          {info.getValue()}
+        </a>
+      ),
     },
     {
-      accessorKey: 'client',
-      header: () => 'Client',
+      accessorKey: "client",
+      header: () => "Client",
       cell: (info) => {
-        const roles = info.getValue();
+        const roles = info.getValue(); // { name, img, email, _id }
+        const row = info.row.original; // full row data
+
+        console.log("Client Row Data:", row);
+
         return (
-          <a href="#" className="hstack gap-3">
-            {
-              roles?.img ?
-                <div className="avatar-image avatar-md">
-                  <img src={roles?.img} alt="" className="img-fluid" />
-                </div>
-                :
-                <div className="text-white avatar-text user-avatar-text avatar-md">{roles?.name.substring(0, 1)}</div>
-            }
+          <Link to={`/proposal/view/${row.proposal}`} className="hstack gap-3">
+            {roles?.img ? (
+              <div className="avatar-image avatar-md">
+                <img src={roles?.img} alt="" className="img-fluid" />
+              </div>
+            ) : (
+              <div className="text-white avatar-text user-avatar-text avatar-md">
+                {roles?.name?.substring(0, 1)}
+              </div>
+            )}
             <div>
               <span className="text-truncate-1-line">{roles?.name}</span>
-              <small className="fs-12 fw-normal text-muted">{roles?.email}</small>
+              <small className="fs-12 fw-normal text-muted">
+                {roles?.email}
+              </small>
             </div>
-          </a>
-        )
-      }
-    },
-    {
-      accessorKey: 'subject',
-      header: () => 'Subject',
-    },
-    {
-      accessorKey: 'amount',
-      header: () => 'Amount',
-      meta: {
-        className: "fw-bold text-dark"
-      }
-    },
-    {
-      accessorKey: 'date',
-      header: () => 'Date',
-    },
-    {
-      accessorKey: 'status',
-      header: () => 'Status',
-      cell: (info) => <div className={`badge ${info.getValue().color}`}>{info.getValue().content}</div>
-    },
-    {
-      accessorKey: 'actions',
-      header: () => "Actions",
-      cell: info => (
-        <div className="hstack gap-2 justify-content-end">
-          <a href="#" className="avatar-text avatar-md" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">
-            <FiSend />
-          </a>
-          <Link to="/proposal/view" className="avatar-text avatar-md">
-            <FiEye />
           </Link>
-          <Dropdown dropdownItems={actions} triggerIcon={<FiMoreHorizontal />} triggerClass='avatar-md' triggerPosition={"0,21"} />
+        );
+      },
+    },
+
+    {
+      accessorKey: "subject",
+      header: () => "Subject",
+    },
+    {
+      accessorKey: "amount",
+      header: () => "Amount",
+      meta: {
+        className: "fw-bold text-dark",
+      },
+    },
+    {
+      accessorKey: "date",
+      header: () => "Date",
+    },
+    {
+      accessorKey: "status",
+      header: () => "Status",
+      cell: (info) => (
+        <div className={`badge ${info.getValue().color}`}>
+          {info.getValue().content}
         </div>
       ),
-      meta: {
-        headerClassName: 'text-end'
-      }
     },
-  ]
+    {
+      accessorKey: "actions",
+      header: () => "Actions",
+      cell: (info) => {
+        const row = info.row.original; // full row data
+        return (
+          <div className="hstack gap-2 justify-content-end">
+            <a
+              href="#"
+              className="avatar-text avatar-md"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#proposalSent"
+            >
+              <FiSend />
+            </a>
+            <Link
+              to={`/proposal/view/${row.proposal}`}
+              className="avatar-text avatar-md"
+            >
+              <FiEye />
+            </Link>
+            <Dropdown
+           
+              dropdownItems={actions.map(a => ({ ...a, row }))}
+              triggerIcon={<FiMoreHorizontal />}
+              triggerClass="avatar-md"
+              triggerPosition={"0,21"}
+              // row={row}
+            />
+          </div>
+        );
+      },
+      meta: {
+        headerClassName: "text-end",
+      },
+    },
+  ];
   return (
     <>
       <Table data={proposalTableData} columns={columns} />
-      {/* <Table data={proposalTableData} columns={columns} /> */}
-
     </>
-  )
-}
+  );
+};
 
-export default ProposalTable
+export default ProposalTable;

@@ -1,6 +1,6 @@
 const propsalRelatedOptions = [
     { value: 'lead', label: 'Lead', icon: "feather-at-sign" },
-    { value: 'coustomer', label: 'Coustomer', icon: "feather-users" },
+    { value: 'customer', label: 'customer', icon: "feather-users" },
 ]
 const propsalDiscountOptions = [
     { value: 'no-discount', label: 'No Discount' },
@@ -130,6 +130,7 @@ const taskAssigneeOptions = [
 
 const leadsStatusOptions = [
     { value: "new", label: "New", color: "#3454d1" },
+      { value: "open", label: "Open", color: "#007bff" }, 
     { value: "contacted", label: "Contacted", color: "#41b2c4" },
     { value: "working", label: "Working", color: "#ffa21d" },
     { value: "qualified", label: "Qualified", color: "#17c666" },

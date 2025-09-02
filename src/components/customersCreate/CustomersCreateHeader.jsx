@@ -11,10 +11,10 @@ const CustomersCreateHeader = () => {
                 <FiLayers size={16} className='me-2' />
                 <span>Save as Draft</span>
             </a>
-            <a href="#" className="btn btn-primary" onClick={handleClick}>
+            {/* <a href="#" className="btn btn-primary" onClick={handleClick}>
                 <FiUserPlus size={16} className='me-2' />
                 <span>Create Customer</span>
-            </a>
+            </a> */}
         </div>
     )
 }

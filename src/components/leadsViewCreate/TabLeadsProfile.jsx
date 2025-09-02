@@ -29,10 +29,10 @@ const TabLeadsProfile = () => {
             title: 'Name',
             content: <a href="#">{data?.name || 'N/A'}</a>,
         },
-        {
-            title: 'Position',
-            content: <>CEO, Founder at <a href="#">{data?.company || 'N/A'}</a></>,
-        },
+        // {
+        //     title: 'Position',
+        //     content: <> <a href="#">{data?.company || 'N/A'}</a></>,
+        // },
         {
             title: 'Company',
             content: <a href="#">{data?.company || 'N/A'}</a>,
@@ -49,10 +49,10 @@ const TabLeadsProfile = () => {
             title: 'Website',
             content: <a href={data?.website} target="_blank">{data?.website || 'N/A'}</a>,
         },
-        {
-            title: 'Lead value',
-            // content: <a href="#">$255.50 USD</a>,
-        },
+        // {
+        //     title: 'Lead value',
+        //     // content: <a href="#">$255.50 USD</a>,
+        // },
         {
             title: 'Address',
             content: <a href="#">{data?.address || 'N/A'}</a>,
@@ -106,10 +106,10 @@ const TabLeadsProfile = () => {
             }) : '26 MAY, 2023',
         },
         {
-            title: 'Assigned',
-            image: '/images/avatar/1.png',
-            text: data?.assigned?.join(', ') || 'Alexandra Della',
-        },
+  title: 'Assigned',
+  image: '/images/avatar/1.png',
+  text: data?.assigned?.map(user => `${user.name} (${user.email})`).join(', ') || 'No Assigned',
+},
         {
             title: 'Lead By',
             image: '/images/avatar/5.png',

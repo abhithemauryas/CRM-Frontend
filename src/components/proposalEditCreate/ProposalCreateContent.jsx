@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SelectDropdown from "@/components/shared/SelectDropdown";
 import MultiSelectTags from "@/components/shared/MultiSelectTags";
 import MultiSelectImg from "@/components/shared/MultiSelectImg";
 import DatePicker from "react-datepicker";
 import useDatePicker from "@/hooks/useDatePicker";
 import {
-  propasalLeadOptions,
+  // propasalLeadOptions,
   propsalDiscountOptions,
   propsalRelatedOptions,
   propsalStatusOptions,
   propsalVisibilityOptions,
-  taskAssigneeOptions,
+  //   taskAssigneeOptions,
   taskLabelsOptions,
 } from "@/utils/options";
 import { timezonesData } from "@/utils/fackData/timeZonesData";
@@ -21,6 +21,7 @@ import AddProposal from "./AddProposal";
 
 import axios from "axios";
 import topTost from "@/utils/topTost";
+import { useNavigate } from "react-router-dom";
 
 const previtems = [
   {
@@ -32,15 +33,21 @@ const previtems = [
 ];
 const ProposalCreateContent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [tags,setTags]= useState([])
-  const [assignees ,setAssignees]=useState([])
+  const [tags, setTags] = useState([]);
+  const [assignees, setAssignees] = useState([]);
   const [items, setItems] = useState([]);
 
+  const [propasalLeadOptions, setPropasalLeadOptions] = useState([]);
+  const [taskAssigneeOptions, setTaskAssigneeOptions] = useState([]);
+  const [discountOption, setDiscountOption] = useState(null);
+  // const [visibilityOption, setVisibilityOption] = useState(null);
+  const [timezoneOption, setTimezoneOption] = useState(null);
+  const [toOption, setToOption] = useState(null);
 
   const { startDate, endDate, setStartDate, setEndDate, renderFooter } =
     useDatePicker();
-
-    const [selected, setOptions] = useState({})
+  const navigator = useNavigate();
+  const [selected, setOptions] = useState({});
 
   const {
     countries,
@@ -49,19 +56,62 @@ const ProposalCreateContent = () => {
     loading,
     error,
     fetchStates,
-    fetchCities,} = useLocationData();
+    fetchCities,
+  } = useLocationData();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // lead options fill-up
+        const { data } = await axios.get("https://crm-backend-bxsr.onrender.com/lead/options");
+        setPropasalLeadOptions(
+          data.leads.map((lead) => ({
+            value: lead._id,
+            label: `${lead.name} - ${lead.email}`,
+          }))
+        );
+        // Assignee options fill-up
+        const { data: users } = await axios.get(
+          "https://crm-backend-bxsr.onrender.com/employee/options"
+        );
+        console.log(users);
+        setTaskAssigneeOptions(
+          users.employees.map((user) => ({
+            value: user._id,
+            label: `${user.name} - ${user.email}`,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching proposal lead options:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const fetchLeadDetails = async (objID) => {
+    const { data } = await axios.get(`https://crm-backend-bxsr.onrender.com/lead/${objID}`);
+    setFields({
+      ...fields,
+      addressLine1: data.lead.address,
+      email: data.lead.email,
+      phone: data.lead.phone,
+      country: data.lead.country,
+      state: data.lead.state,
+      city: data.lead.city,
+    });
+  };
+
   const [fields, setFields] = useState({
     subject: "",
-    to:"",
+    to: "",
     relatedTo: "",
-    leadId: "",
     discount: "",
     visibility: "",
     status: "",
     startDate: "",
     dueDate: "",
     tags: [],
-    assignees:  [],
+    assignees: [],
     addressLine1: "",
     addressLine2: "",
     email: "",
@@ -72,53 +122,53 @@ const ProposalCreateContent = () => {
     timezone: "",
     currency: "",
     allowComments: "",
-    items: [] // if nothing added
-
+    items: [], // if nothing added
   });
-  const change = (e) => {
-    console.log("change", e.target.name, e.target.value);
+  const change = (e) =>
     setFields({ ...fields, [e.target.name]: e.target.value });
-  };
 
   const fetcchProposal = async () => {
     try {
-     const formData = {
-  ...fields,
-  tags: tags.length > 0 ? tags.map(i => i.value) : [],
-  assignees: assignees.length > 0 ? assignees.map(a => a.value) : [],
-  ...selected,
-  startDate,
-  dueDate: endDate,
-  items: items.length > 0 ? items.map(item => ({
-    product: item.product,
-    qty: item.qty,
-    price: item.price
-  })) : []
-};
-      console.log("Payload ready", formData)
+      const formData = {
+        ...fields,
+        to:fields.toId,
+        tags: tags.length > 0 ? tags.map((i) => i.value) : [],
+        assignees: assignees.length > 0 ? assignees.map((a) => a.value) : [],
+        ...selected,
+        startDate,
+        dueDate: endDate,
+        items:
+          items.length > 0
+            ? items.map((item) => ({
+                product: item.product,
+                qty: item.qty,
+                price: item.price,
+              }))
+            : [],
+      };
       const config = {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("crmToken"),
         },
       };
-      console.log("form data header",formData )
       const response = await axios.post(
         "https://crm-backend-bxsr.onrender.com/proposal/create",
         formData,
         config
       );
       response.data.proposal &&
-      console.log("Proposal data created successfully:");
+        console.log("Proposal data created successfully:");
       console.log(response.data.proposal);
       topTost(
-        response?.data?.message || "Customer created successfully!",
+        response?.data?.message || "Proposal created successfully!",
         "success"
       );
+      navigator("/proposal/list");
     } catch (error) {
-      console.error("Error creating customer:", error);
+      console.error("Error creating proposal:", error);
       topTost(
-        error?.response?.data.message || "Error creating customer",
+        error?.response?.data.message || "Error creating proposal",
         "error"
       );
     }
@@ -131,7 +181,7 @@ const ProposalCreateContent = () => {
   return (
     <>
       {loading ? <Loading /> : ""}
-    
+
       <div className="col-xl-6">
         <div className="card stretch stretch-full">
           <div className="card-body">
@@ -156,10 +206,12 @@ const ProposalCreateContent = () => {
                 options={propsalRelatedOptions}
                 selectedOption={selectedOption}
                 defaultSelect="lead"
-                onSelectOption={(option) =>  setOptions({...selected, relatedTo: option.value})}
+                onSelectOption={(option) => {
+                  setFields({ ...fields, relatedTo: option.value });
+                }}
               />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="form-label">
                 Lead <span className="text-danger">*</span>
               </label>
@@ -172,14 +224,17 @@ const ProposalCreateContent = () => {
                   // setSelectedOption(option)
                 }}
               />
-            </div>
+            </div> */}
             <div className="mb-4">
               <label className="form-label">Discount </label>
               <SelectDropdown
                 options={propsalDiscountOptions}
-                selectedOption={selectedOption}
+                selectedOption={discountOption}
                 defaultSelect="no-discount"
-                onSelectOption={(option) => setSelectedOption(option)}
+                onSelectOption={(option) => {
+                  setDiscountOption(option);
+                  setFields({ ...fields, discount: option.value });
+                }}
               />
             </div>
             <div className="mb-4">
@@ -189,9 +244,10 @@ const ProposalCreateContent = () => {
                 selectedOption={selectedOption}
                 defaultSelect="private"
                 onSelectOption={(option) => {
-                  console.log(option)
-                  setOptions({...selected, visibility: option.label})
-                  setSelectedOption(option.value)}}
+                  console.log("visibility",option);
+                  setOptions({ ...selected, visibility: option.value });
+                  setSelectedOption(option.value);
+                }}
               />
             </div>
             <div className="row">
@@ -240,18 +296,22 @@ const ProposalCreateContent = () => {
             </div>
             <div className="mb-4">
               <label className="form-label">Tags:</label>
-              <MultiSelectTags options={taskLabelsOptions} 
+              <MultiSelectTags
+                options={taskLabelsOptions}
                 selectedValues={tags}
                 setSelectedTags={setTags}
-              placeholder={""} />
+                placeholder={""}
+              />
             </div>
             <div className="mb-0">
               <label className="form-label">Assignee:</label>
-              <MultiSelectImg options={taskAssigneeOptions}
-              selectedValues={assignees}
-             setSelectedOptions={setAssignees}
-              // onSelectOption={(option) => setSelectedOption(option)}
-              placeholder={""} />
+              <MultiSelectImg
+                options={taskAssigneeOptions}
+                selectedValues={assignees}
+                setSelectedOptions={setAssignees}
+                // onSelectOption={(option) => setSelectedOption(option)}
+                placeholder={""}
+              />
             </div>
           </div>
         </div>
@@ -264,14 +324,13 @@ const ProposalCreateContent = () => {
                 To <span className="text-danger">*</span>
               </label>
               <SelectDropdown
-                options={taskAssigneeOptions}
-                selectedOption={selectedOption}
-                defaultSelect="nneth.une@gmail.com"
-    
-                onSelectOption={(option)=>{
-                  console.log(option)
-                setOptions({...selected, to:option.value})
-                  setSelectedOption(option)
+                options={propasalLeadOptions}
+                selectedOption={toOption}
+                onSelectOption={(option) => {
+                  setOptions({ ...selected, leadId: option.value }); // ✅ leadId bhejna
+                  setFields({ ...fields, to: option.label, toId: option.value });
+                  fetchLeadDetails(option.value);
+                  setSelectedOption(option);
                 }}
               />
             </div>
@@ -280,23 +339,13 @@ const ProposalCreateContent = () => {
                 Address <span className="text-danger">*</span>
               </label>
               <div className="row">
-                <div className="col-lg-6 mb-4">
+                <div className="col-lg-12 mb-4">
                   <input
                     type="text"
                     className="form-control mb-2"
                     placeholder="Address Line 1"
                     name={"addressLine1"}
                     value={fields.addressLine1}
-                    onChange={change}
-                  />
-                </div>
-                <div className="col-lg-6 mb-4">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Address Line 2"
-                    name={"addressLine2"}
-                    value={fields.addressLine2}
                     onChange={change}
                   />
                 </div>
@@ -377,7 +426,7 @@ const ProposalCreateContent = () => {
                 <label className="form-label">Timezone </label>
                 <SelectDropdown
                   options={timezonesData}
-                  selectedOption={selectedOption}
+                  selectedOption={timezoneOption}
                   defaultSelect="Western Europe Time"
                   onSelectOption={(option) => {
                     console.log("time", option);
@@ -395,9 +444,9 @@ const ProposalCreateContent = () => {
                   selectedOption={selectedOption}
                   defaultSelect="usd"
                   onSelectOption={(option) => {
-                     setFields({...fields,currency: option.label })
-                    setSelectedOption(option)}}
-                  
+                    setFields({ ...fields, currency: option.label });
+                    setSelectedOption(option);
+                  }}
                 />
               </div>
               <div className="col-lg-6 mb-4">
@@ -406,10 +455,11 @@ const ProposalCreateContent = () => {
                   options={propsalStatusOptions}
                   selectedOption={selectedOption}
                   defaultSelect="open"
-                  onSelectOption={(option) =>{
-                    console.log(option)
-                    setFields({...fields,status: option.label })
-                    setSelectedOption(option)}}
+                  onSelectOption={(option) => {
+                    console.log(option);
+                    setFields({ ...fields, status: option.label });
+                    setSelectedOption(option);
+                  }}
                 />
               </div>
             </div>
@@ -437,19 +487,18 @@ const ProposalCreateContent = () => {
       <AddProposal previtems={previtems} onItemsChange={setItems} />
 
       <div className="col-12">
-  <div className="card">
-    <div className="card-body text-center">
-      <button
-        type="submit"
-        className="btn btn-primary px-5"
-        onClick={handleSubmit}
-      >
-        Submit Proposal
-      </button>
-    </div>
-  </div>
-</div>
-
+        <div className="card">
+          <div className="card-body text-center">
+            <button
+              type="submit"
+              className="btn btn-primary px-5"
+              onClick={handleSubmit}
+            >
+              Submit Proposal
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

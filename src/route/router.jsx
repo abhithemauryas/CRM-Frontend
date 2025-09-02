@@ -72,11 +72,17 @@ import WidgetsMiscellaneous from "../pages/widgets-miscellaneous";
 // ✅ NEW IMPORT
 import TabLeadsProfile from "../components/leadsViewCreate/TabLeadsProfile";
 import CustomerContent from "@/components/customersView/CustomerContent";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <RootLayout />,
+        element:(
+         <ProtectedRoute>
+            <RootLayout />
+         </ProtectedRoute>
+        ),
+        
         children: [
             {
                 path: "/",
@@ -107,11 +113,11 @@ export const router = createBrowserRouter([
                 element: <Proposalist />
             },
             {
-                path: "/proposal/view",
+                path: "/proposal/view/:id",
                 element: <ProposalView />
             },
             {
-                path: "/proposal/edit",
+                path: "/proposal/edit/:id",
                 element: <ProposalEdit />
             },
             {
@@ -152,6 +158,10 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/leads/create",
+                element: <LeadsCreate />
+            },
+             {
+                path: "/leads/create/:id",
                 element: <LeadsCreate />
             },
             {
@@ -293,16 +303,16 @@ export const router = createBrowserRouter([
         path: "/",
         element: <LayoutAuth />,
         children: [
+            // {
+            //     path: "/authentication/login/cover",
+            //     element: <LoginCover />
+            // },
+            // {
+            //     path: "/authentication/login/minimal",
+            //     element: <LoginMinimal />
+            // },
             {
-                path: "/authentication/login/cover",
-                element: <LoginCover />
-            },
-            {
-                path: "/authentication/login/minimal",
-                element: <LoginMinimal />
-            },
-            {
-                path: "/authentication/login/creative",
+                path: "/authentication/login",
                 element: <LoginCreative />
             },
             {

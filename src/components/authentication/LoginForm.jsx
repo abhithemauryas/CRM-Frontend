@@ -1,12 +1,13 @@
 import topTost from "@/utils/topTost";
 import axios from "axios";
 import React, { useState } from "react";
-import { FiFacebook, FiGithub, FiTwitter } from "react-icons/fi";
+import { FiEye, FiFacebook, FiGithub, FiTwitter } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginForm = ({ registerPath, resetPath }) => {
   const [emailOrMobile, setEmailOrMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   
   const fetchUser = async () => {
@@ -68,17 +69,27 @@ const LoginForm = ({ registerPath, resetPath }) => {
             required
           />
         </div>
-        <div className="mb-3">
+        <div className="mb-3 input-group field">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             className="form-control"
             placeholder="Password"
             // defaultValue="123456"
             value={password}
             onChange={(e)=>setPassword(e.target.value)}
             required
+            
           />
+         <div
+               className="input-group-text border-start bg-gray-2 c-pointer"
+               data-bs-toggle="tooltip"
+               title="Show/Hide Password"
+               onClick={() => setShowPassword(!showPassword)} // ✅ toggle
+             >
+               <FiEye size={16} />
+             </div>
         </div>
+        
         <div className="d-flex align-items-center justify-content-between">
           <div>
             <div className="custom-control custom-checkbox">

@@ -161,7 +161,7 @@ const TabProfile = () => {
           placeholder={"Name"}
           name={"name"}
           type="text"
-          value={name}
+          value={fields.name}
           changeFunction={change}
         />
         <Input
@@ -171,7 +171,7 @@ const TabProfile = () => {
           placeholder={"Email"}
           name={"email"}
           type="email"
-          value={email}
+          value={fields.email}
           changeFunction={change}
         />
         {/* <Input
@@ -432,7 +432,7 @@ const TabProfile = () => {
                         />
                     </div>
                 </div> */}
- <div className="row">
+            <div className="row">
           <div className="col-12 d-flex justify-content-center mt-4">
             <button type="submit" className="btn btn-primary px-5 py-3">Create</button>
           </div>

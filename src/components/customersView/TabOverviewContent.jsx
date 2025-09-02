@@ -4,7 +4,7 @@ import { FiAlertTriangle } from 'react-icons/fi';
 import { projectsData } from '@/utils/fackData/projectsData';
 import ImageGroup from '@/components/shared/ImageGroup';
 import HorizontalProgress from '@/components/shared/HorizontalProgress';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import topTost from '@/utils/topTost';
 import useDatePicker from "@/hooks/useDatePicker";
@@ -29,6 +29,7 @@ const TabOverviewContent = () => {
   });
 
   const { id } = useParams();
+  const location = useLocation();
 
   const fetchCustomerProfile = async () => {
     try {
@@ -75,6 +76,11 @@ const TabOverviewContent = () => {
       console.error('Error updating profile:', error);
     }
   };
+  useEffect(() => {
+  if (location.state?.editMode) {
+    setEditMode(true);
+  }
+}, [location.state]);
 
   const profileFields = [
     { label: 'Name', name: 'name' },
@@ -178,7 +184,7 @@ const TabOverviewContent = () => {
         </div>
       </div>}
 
-      {0 && <div className="project-section">
+      { "" && <div className="project-section">
         <div className="mb-4 d-flex align-items-center justify-content-between">
           <h5 className="fw-bold mb-0">Projects Details:</h5>
           <a href="#" className="btn btn-sm btn-light-brand">

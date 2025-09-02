@@ -7,7 +7,7 @@ import {
   leadsSourceOptions,
   leadsStatusOptions,
   propsalVisibilityOptions,
-  taskAssigneeOptions,
+  // taskAssigneeOptions,
   taskStatusOptions,
 } from "@/utils/options";
 import useLocationData from "@/hooks/useLocationData";
@@ -20,8 +20,11 @@ import MultiSelectImg from "@/components/shared/MultiSelectImg";
 import MultiSelectTags from "@/components/shared/MultiSelectTags";
 import axios from "axios";
 import topTost from "@/utils/topTost";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FiDownload } from "react-icons/fi";
+import { set } from "date-fns";
+import { use } from "react";
+import { labels } from "../tasks/TaskHeader";
 
 const LeadsCreateContent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -35,7 +38,9 @@ const LeadsCreateContent = () => {
   const [groups, setGroups] = useState([]);
   const [assigned, setAssigned] = useState([]);
   const navigate = useNavigate();
-
+  const { id } = useParams();
+  const [leadData, setLeadData] = useState(null);
+  const [taskAssigneeOptions, setTaskAssigneeOptions] = useState([]);
   const [excelFile, setExcelFile] = useState(null);
   const [excelUploadLoading, setExcelUploadLoading] = useState(false);
 
@@ -88,7 +93,7 @@ const LeadsCreateContent = () => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-           "Authorization": "Bearer " + localStorage.getItem('crmToken')
+          Authorization: "Bearer " + localStorage.getItem("crmToken"),
         },
       };
       console.log("ASSIGNED before submit:", assigned);
@@ -97,7 +102,7 @@ const LeadsCreateContent = () => {
         assigned.map((a) => a.value)
       );
       const response = await axios.post(
-       "https://crm-backend-bxsr.onrender.com/lead/create",
+        "https://crm-backend-bxsr.onrender.com/lead/create",
         formData,
         config
       );
@@ -117,15 +122,16 @@ const LeadsCreateContent = () => {
       );
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    fetchData();
+    if (id) {
+      await handleEdit();
+    } else {
+      await fetchData();
+    }
+
     navigate("/leads/list");
   };
-
-  useEffect(() => {
-    console.log("assigned:", assigned); // ✅
-  }, [assigned]);
 
   const handleExcelUpload = (e) => {
     const file = e.target.files[0];
@@ -156,7 +162,7 @@ const LeadsCreateContent = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-             "Authorization": "Bearer " + localStorage.getItem('crmToken')
+            Authorization: "Bearer " + localStorage.getItem("crmToken"),
           },
         }
       );
@@ -177,21 +183,161 @@ const LeadsCreateContent = () => {
     }
   };
 
- const handleDownloadTemplate = async () => {
-  const response = await axios.get(
-    `${import.meta.env.VITE_BASE_URL}/lead/download-template`,
-    { responseType: 'blob' }
-  );
-  const url = window.URL.createObjectURL(new Blob([response.data]));
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', 'lead_template.xlsx');
-  document.body.appendChild(link);
-  link.click();
-};
+  const handleDownloadTemplate = async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/lead/download-template`,
+      { responseType: "blob" }
+    );
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "lead_template.xlsx");
+    document.body.appendChild(link);
+    link.click();
+  };
+  useEffect(() => {
+    if (!id) return;
+    const fetchLeadProfile = async () => {
+      try {
+        const response = await axios.get(`https://crm-backend-bxsr.onrender.com/lead/${id}`);
+        const leadData = response.data.lead;
+        setLeadData(leadData);
+        setFields({
+          status: leadData.status || "",
+          source: leadData.source || "",
+          visibility: leadData.visibility || "",
+          tags: leadData.tags || "",
+          assigned: leadData.assigned || "",
+          name: leadData.name || "",
+          email: leadData.email || "",
+          phone: leadData.phone || "",
+          company: leadData.company || "",
+          website: leadData.website || "",
+          address: leadData.address || "",
+          description: leadData.description || "",
+          country: leadData.country || "",
+          state: leadData.state || "",
+          city: leadData.city || "",
+        });
+        // 👇 Yeh add karo for dropdowns & multiselects
+        if (leadData.status) {
+          setStatusOption(
+            leadsStatusOptions.find(
+              (opt) => opt.value.toLowerCase() === leadData.status.toLowerCase()
+            )
+          );
+        }
+        if (leadData.source) {
+          setSourceOption(
+            leadsSourceOptions.find(
+              (opt) => opt.value.toLowerCase() === leadData.source.toLowerCase()
+            )
+          );
+        }
+        if (leadData.visibility) {
+          setVisibilityOption(
+            propsalVisibilityOptions.find(
+              (opt) =>
+                opt.value.toLowerCase() === leadData.visibility.toLowerCase()
+            )
+          );
+        }
 
+        if (leadData.tags?.length) {
+          setTags(
+            leadData.tags
+              .map((tag) => leadsTags.find((opt) => opt.value === tag))
+              .filter(Boolean)
+          );
+        }
+        if (leadData.groups) {
+          setGroups([
+            leadsGroupsOptions.find((opt) => opt.value === leadData.groups),
+          ]);
+        }
+        if (leadData.assigned?.length) {
+          setAssigned(
+            leadData.assigned.map((a) => ({
+              value: a._id,
+              label: `${a.name} - ${a.email}`,
+            }))
+          );
+        }
 
+        if (leadData.country) {
+          setCountryOption({
+            label: leadData.country,
+            value: leadData.country,
+          });
+        }
+        if (leadData.state) {
+          setStateOption({ label: leadData.state, value: leadData.state });
+        }
+        if (leadData.city) {
+          setCityOption({ label: leadData.city, value: leadData.city });
+        }
+      } catch (error) {
+        console.error("Error fetching Lead profile:", error);
+        topTost(
+          error?.response?.data?.message || "Error fetching Lead profile:",
+          "error"
+        );
+      }
+    };
 
+    fetchLeadProfile();
+  }, [id]);
+
+  const handleEdit = async () => {
+    try {
+      const formData = {
+        ...fields,
+        tags: tags.map((tag) => tag.value),
+        groups: groups.length > 0 ? groups[0].value : "",
+        assigned: assigned.map((user) => user.value),
+        status: statusOption?.value,
+        source: sourceOption?.value,
+        visibility: visibilityOption?.value,
+        country: countryOption?.value || fields.country,
+        state: stateOption?.value || fields.state,
+        city: cityOption?.value || fields.citys,
+      };
+      await axios.put(
+        `https://crm-backend-bxsr.onrender.com/lead/update/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem("crmToken"),
+          },
+        }
+      );
+      topTost("Lead updated successfully!", "success");
+    } catch (error) {
+      console.error("Error updating Lead:", error);
+      topTost(error?.response?.data?.message || "Error updating Lead", "error");
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: users } = await axios.get(
+          "https://crm-backend-bxsr.onrender.com/employee/options"
+        );
+        console.log("users", users);
+        setTaskAssigneeOptions(
+          users.employees.map((user) => ({
+            value: user._id,
+            label: `${user.name}- ${user.email}`,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching assigned options:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -217,9 +363,9 @@ const LeadsCreateContent = () => {
                   <label className="form-label">Status</label>
                   <SelectDropdown
                     options={leadsStatusOptions}
-                    selectedOption={statusOption}
-                    defaultSelect="new"
-                    onSelectOption={(option) => setStatusOption(option)}
+                    value={statusOption}
+                    defaultValue={leadsStatusOptions[0]} // agar default rakhna hai
+                    onChange={(option) => setStatusOption(option)}
                   />
                 </div>
                 <div className="col-lg-4 mb-4">
@@ -227,13 +373,10 @@ const LeadsCreateContent = () => {
                   <SelectDropdown
                     options={leadsSourceOptions}
                     selectedOption={sourceOption}
-                    defaultSelect="facebook"
+                       defaultValue={leadsSourceOptions[0]}
                     onSelectOption={(option) => {
                       setSourceOption(option);
-                      console.log("logoooooooooooooooooooooooo",option.value )
-                      console.log("logoooooooooooooooooooooooo",option.value )
-        
-                      setFields({ ...fields, source: option.value });
+                      console.log("logooooo", option.value);
                     }}
                   />
                 </div>
@@ -242,10 +385,8 @@ const LeadsCreateContent = () => {
                   <SelectDropdown
                     options={propsalVisibilityOptions}
                     selectedOption={visibilityOption}
-                    defaultSelect="public"
-                    onSelectOption={(option) => {
-                      setFields({ fields, visibility: option.value });
-                    }}
+                       defaultValue={propsalVisibilityOptions[0]}
+                    onSelectOption={(option) => setVisibilityOption(option)}
                   />
                 </div>
                 <div className="col-lg-4 mb-4">
@@ -371,6 +512,7 @@ const LeadsCreateContent = () => {
                 placeholder={"Description"}
                 row="5"
                 name={"description"}
+                value={fields.description}
                 changeFunction={change}
               />
               <div className="row mb-4 align-items-center">
@@ -466,7 +608,7 @@ const LeadsCreateContent = () => {
               <div className="row">
                 <div className="col-12 d-flex justify-content-center mt-4">
                   <button type="submit" className="btn btn-primary px-5 py-3">
-                    Lead Create
+                    {id ? "Update Lead" : "Create Lead"}
                   </button>
                 </div>
               </div>
@@ -486,14 +628,17 @@ const LeadsCreateContent = () => {
             </p>
 
             {/* Download Format Button */}
-         <button
-  className="btn btn-outline-primary mb-3"
-  onClick={() => {
-    window.open(`${import.meta.env.VITE_BASE_URL}/lead/download-template`, "_blank");
-  }}
->
-  ⬇️ Download Excel Template
-</button>
+            <button
+              className="btn btn-outline-primary mb-3"
+              onClick={() => {
+                window.open(
+                  `${import.meta.env.VITE_BASE_URL}/lead/download-template`,
+                  "_blank"
+                );
+              }}
+            >
+              ⬇️ Download Excel Template
+            </button>
 
             {/* File Upload Input */}
             <input

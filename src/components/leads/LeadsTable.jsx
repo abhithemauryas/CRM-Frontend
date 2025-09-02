@@ -14,29 +14,20 @@ import Dropdown from "@/components/shared/Dropdown";
 import SelectDropdown from "@/components/shared/SelectDropdown";
 import getIcon from "@/utils/getIcon";
 import axios from "axios"; // ✅ Import Axios
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import topTost from "@/utils/topTost";
 import sourceOptions from "@/utils/sourceOptions";
+import { confirmDelete } from "@/utils/confirmDelete";
 
-
-const actions = [
-  { label: "Edit", icon: <FiEdit3 /> },
-  { label: "Print", icon: <FiPrinter /> },
-  { label: "Remind", icon: <FiClock /> },
-  { type: "divider" },
-  { label: "Archive", icon: <FiArchive /> },
-  { label: "Report Spam", icon: <FiAlertOctagon /> },
-  { type: "divider" },
-  { label: "Delete", icon: <FiTrash2 /> },
-];
-
-const updateStatus =  async (option, id) => {
-  const {data} = await axios.get(`https://crm-backend-bxsr.onrender.com/lead-status/${id}/${option.value}`);
-}
+const updateStatus = async (option, id) => {
+  const { data } = await axios.get(
+    `https://crm-backend-bxsr.onrender.com/lead-status/${id}/${option.value}`
+  );
+};
 
 const TableCell = memo(({ id, options, defaultSelect }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const navigate = useNavigate();
+ 
 
   return (
     <SelectDropdown
@@ -54,6 +45,25 @@ const TableCell = memo(({ id, options, defaultSelect }) => {
 
 const LeadssTable = () => {
   const [data, setData] = useState([]);
+  const { id } = useParams();
+   const navigate = useNavigate();
+
+   const actions = [
+  { label: "Edit",
+     icon: <FiEdit3 />,
+    onClick:(row)=>navigate(`/leads/create/${row.leadId}`)
+     // 👈 id ke sath navigate
+   },
+  { label: "Print", icon: <FiPrinter /> },
+  { label: "Remind", icon: <FiClock /> },
+  { type: "divider" },
+  { label: "Archive", icon: <FiArchive /> },
+  { label: "Report Spam", icon: <FiAlertOctagon /> },
+  { type: "divider" },
+  { label: "Delete", icon: <FiTrash2 /> ,
+    onClick:(row)=>deleteLead(row.leadId,setData)
+  }
+];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,78 +72,119 @@ const LeadssTable = () => {
         console.log("API Response:", res.data);
 
         const formattedData = res.data.leads.map((item, index) => {
-        const matchedSource = sourceOptions.find(s => s.value === item.source);
+          const matchedSource = sourceOptions.find(
+            (s) => s.value === item.source
+          );
 
-        return {
-          id: index + 1,
-          leadId: item._id,
-          customer: {
-            name: item.name,
-            img: null,
-          },
-          email: item.email,
-          source: {
-            media: matchedSource?.label || item.source || "N/A",
-            icon: matchedSource?.icon || "feather-globe",
-          },
-          phone: item.phone,
-          date: new Date(item.createdAt).toLocaleDateString(),
-          status: {
-            status: [
-              { label: "Open", value: "open" },
-              { label: "Working", value: "working" },
-              { label: "Closed", value: "closed" },
-            ],
-            defaultSelect: item.status || "open",
-          },
-          actions: "",
-        };
-  });
+          return {
+            id: index + 1,
+            leadId: item._id,
+            customer: {
+              name: item.name,
+              img: null,
+            },
+            email: item.email,
+            source: {
+              media: matchedSource?.label || item.source || "N/A",
+              icon: matchedSource?.icon || "feather-globe",
+            },
+            phone: item.phone,
+            date: new Date(item.createdAt).toLocaleDateString(),
+            status: {
+              status: [
+                { label: "Open", value: "open" },
+                { label: "Working", value: "working" },
+                { label: "Closed", value: "closed" },
+              ],
+              defaultSelect: item.status || "open",
+            },
+            actions: "",
+          };
+        });
 
         setData(formattedData);
       } catch (error) {
         console.error("Error fetching data", error);
-        topTost(error?.response?.data?.message ||"Error fetching data", "error") 
+        topTost(
+          error?.response?.data?.message || "Error fetching data",
+          "error"
+        );
       }
     };
     fetchData();
   }, []);
 
+ const deleteLead = async (leadId,setData)=>{
+   const result= await confirmDelete(leadId);
+   if(!result.confirmed) return; 
+  try {
+     const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("crmToken"),
+        },
+      };
+    await axios.delete(`https://crm-backend-bxsr.onrender.com/lead/delete/${leadId}`, config);
+    setData(prevData=>prevData.filter(item=>item.leadId!==leadId))
+    Swal.fire({
+      title: "Deleted!",
+      text: "The lead has been deleted successfully.",
+      icon: "success",
+      customClass:{
+       confirmButton: "btn btn-success",
+       cancelButton: "btn btn-danger"
+      }
+    })
+  } catch (error) {
+    console.error("Error deleting lead", error);
+    Swal.fire({
+      title: "Error!",
+      text: error?.response?.data?.message || "Error deleting lead",
+      icon: "error",
+      customClass: {
+        confirmButton: "btn btn-danger",
+      },
+    });
+  }
+};
+
+
+
   const columns = [
-    {
-      accessorKey: "id",
-      header: ({ table }) => {
-        const checkboxRef = React.useRef(null);
+    // {
+    //   accessorKey: "id",
+    //   header: ({ table }) => {
+    //     const checkboxRef = React.useRef(null);
 
-        useEffect(() => {
-          if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = table.getIsSomeRowsSelected();
-          }
-        }, [table.getIsSomeRowsSelected()]);
+    //     useEffect(() => {
+    //       if (checkboxRef.current) {
+    //         checkboxRef.current.indeterminate = table.getIsSomeRowsSelected();
+    //       }
+    //     }, [table.getIsSomeRowsSelected()]);
 
-        return (
-          <input
-            type="checkbox"
-            className="custom-table-checkbox"
-            ref={checkboxRef}
-            checked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        );
-      },
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          className="custom-table-checkbox"
-          checked={row.getIsSelected()}
-          disabled={!row.getCanSelect()}
-          onChange={row.getToggleSelectedHandler()}
-        />
-      ),
-      meta: {
-        headerClassName: "width-30",
-      },
-    },
+    //     // return (
+    //     //   <input
+    //     //     type="checkbox"
+    //     //     className="custom-table-checkbox"
+    //     //     ref={checkboxRef}
+    //     //     checked={table.getIsAllRowsSelected()}
+    //     //     onChange={table.getToggleAllRowsSelectedHandler()}
+    //     //   />
+    //     // );
+    //   },
+    //   // cell: ({ row }) => (
+    //   //   <input
+    //   //     type="checkbox"
+    //   //     className="custom-table-checkbox"
+    //   //     checked={row.getIsSelected()}
+    //   //     disabled={!row.getCanSelect()}
+    //   //     onChange={row.getToggleSelectedHandler()}
+    //   //   />
+    //   // ),
+    //   meta: {
+    //     headerClassName: "width-30",
+    //   },
+    // },
     {
       accessorKey: "customer",
       header: () => "Customer",
@@ -142,16 +193,18 @@ const LeadssTable = () => {
         const row = info.row.original; // ✅ this gives full row data including leadId
 
         return (
-          <Link to={`/leads/view/${row.leadId}`}  className="hstack gap-3">
-            {roles?.img ? (
+          <Link to={`/leads/view/${row.leadId}`} className="hstack gap-3">
+            {/* {roles?.img ? (
               <div className="avatar-image avatar-md">
                 <img src={roles?.img} alt="" className="img-fluid" />
               </div>
-            ) : (
+            ) :
+            
+            (
               <div className="text-white avatar-text user-avatar-text avatar-md">
-                {roles?.name.substring(0, 1)}
+                {roles?.name.substring(0, 1 ) || "NA" }
               </div>
-            )}
+            )} */}
             <div>
               <span className="text-truncate-1-line">{roles?.name}</span>
             </div>
@@ -162,7 +215,10 @@ const LeadssTable = () => {
     {
       accessorKey: "email",
       header: () => "Email",
-      cell: (info) => <a href="apps-email.html">{info.getValue()}</a>,
+      cell: (info) => {
+        const row = info.row.original;
+        return <Link to={`/leads/view/${row.leadId}`}>{info.getValue()}</Link>;
+      },
     },
     {
       accessorKey: "source",
@@ -186,37 +242,59 @@ const LeadssTable = () => {
       accessorKey: "date",
       header: () => "Date",
     },
+    
     {
       accessorKey: "status",
       header: () => "Status",
       cell: (info) => {
         const row = info.row.original;
-        
-        return (<TableCell
-          id={row}
-          options={info?.getValue().status}
-          defaultSelect={info?.getValue().defaultSelect}
-        />)
+
+        return (
+          <TableCell
+            id={row}
+            options={info?.getValue().status}
+            defaultSelect={info?.getValue().defaultSelect}
+          />
+        );
+      },
+    },
+      {
+      accessorKey: "status",
+      header: () => "Status",
+      cell: (info) => {
+        const row = info.row.original;
+
+        return (
+          <TableCell
+            id={row}
+            options={info?.getValue().status}
+            defaultSelect={info?.getValue().defaultSelect}
+          />
+        );
       },
     },
     {
       accessorKey: "actions",
       header: () => "Actions",
       cell: (info) => {
-      const row = info.row.original;
-        return(
-        <div className="hstack gap-2 justify-content-end">
-          <Link to={`/leads/view/${row.leadId}`} className="avatar-text avatar-md">
-            <FiEye />
-          </Link>
-          <Dropdown
-            dropdownItems={actions}
-            triggerClassNaclassName="avatar-md"
-            triggerPosition={"0,21"}
-            triggerIcon={<FiMoreHorizontal />}
-          />
-        </div>
-      )},
+        const row = info.row.original;
+        return (
+          <div className="hstack gap-2 justify-content-end">
+            <Link
+              to={`/leads/view/${row.leadId}`}
+              className="avatar-text avatar-md"
+            >
+              <FiEye />
+            </Link>
+            <Dropdown
+              dropdownItems={actions.map(a => ({ ...a, row }))}
+              triggerClass="avatar-md"
+              triggerPosition={"0,21"}
+              triggerIcon={<FiMoreHorizontal />}
+            />
+          </div>
+        );
+      },
       meta: {
         headerClassName: "text-end",
       },
