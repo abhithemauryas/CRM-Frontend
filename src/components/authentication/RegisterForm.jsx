@@ -57,7 +57,7 @@ const RegisterForm = ({ path }) => {
       console.log("User registered successfully:", response.data);
       topTost(response?.data?.message || "Login successful!", "success");
       // alert("User registered successfully");
-      navigate("/authentication/login/creative");
+      navigate("/authentication/login");
 
     } catch (error) {
         console.error("Error during registration:", error);
