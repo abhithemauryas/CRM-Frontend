@@ -324,7 +324,7 @@ export const router = createBrowserRouter([
                 element: <RegisterMinimal />
             },
             {
-                path: "/authentication/register/creative",
+                path: "/authentication/register",
                 element: <RegisterCreative />
             },
             {
@@ -336,7 +336,7 @@ export const router = createBrowserRouter([
                 element: <ResetMinimal />
             },
             {
-                path: "/authentication/reset/creative",
+                path: "/authentication/reset",
                 element: <ResetCreative />
             },
             {
@@ -348,7 +348,7 @@ export const router = createBrowserRouter([
                 element: <ErrorMinimal />
             },
             {
-                path: "/authentication/404/creative",
+                path: "/authentication/404",
                 element: <ErrorCreative />
             },
             {
@@ -360,7 +360,7 @@ export const router = createBrowserRouter([
                 element: <OtpMinimal />
             },
             {
-                path: "/authentication/verify/creative",
+                path: "/authentication/verify",
                 element: <OtpCreative />
             },
             {
@@ -372,7 +372,7 @@ export const router = createBrowserRouter([
                 element: <MaintenanceMinimal />
             },
             {
-                path: "/authentication/maintenance/creative",
+                path: "/authentication/maintenance",
                 element: <MaintenanceCreative />
             },
         ]
