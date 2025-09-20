@@ -8,7 +8,7 @@ const LeadsStatisticsTwo = () => {
   useEffect(() => {
     const fetchLeads = async () => {
       try {
-        const res = await axios.get("https://crm-backend-bxsr.onrender.com/lead/all"); // apna API URL daalo
+        const res = await axios.get("http://localhost:4500/lead/all"); // apna API URL daalo
         const leads = res.data.leads;
 
         // ✅ Calculation

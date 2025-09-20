@@ -59,7 +59,7 @@ const ProposalTable = () => {
   const fetchProposal = async () => {
     try {
       const { data } = await axios.get(
-        "https://crm-backend-bxsr.onrender.com/proposal/find/all"
+        "http://localhost:4500/proposal/find/all"
       );
       const fetched = data.proposals;
       // pull | fetch krte time koi new changes nhi rhne chahiye file me apne side se
@@ -133,7 +133,7 @@ const deleteProposal=async(proposal)=>{
       Authorization: "Bearer " + localStorage.getItem("crmToken"),
     },
     }
-    await axios.delete(`https://crm-backend-bxsr.onrender.com/proposal/delete/${proposal}`,config)
+    await axios.delete(`http://localhost:4500/proposal/delete/${proposal}`,config)
     setProposalTableData(prevData=>prevData.filter(item=>item._id!==proposal))
     await fetchProposal()
      Swal.fire({
@@ -211,9 +211,7 @@ const deleteProposal=async(proposal)=>{
       cell: (info) => {
         const roles = info.getValue(); // { name, img, email, _id }
         const row = info.row.original; // full row data
-
-        console.log("Client Row Data:", row);
-
+        console.log(row.client)
         return (
           <Link to={`/proposal/view/${row.proposal}`} className="hstack gap-3">
             {roles?.img ? (
@@ -226,7 +224,7 @@ const deleteProposal=async(proposal)=>{
               </div>
             )}
             <div>
-              <span className="text-truncate-1-line">{roles?.name}</span>
+              <span className="text-truncate-1-line">{row?.client?.name}</span>
               <small className="fs-12 fw-normal text-muted">
                 {roles?.email}
               </small>

@@ -1,23 +1,10 @@
 export const menuList = [
     {
         id: 0,
-        name: "dashboards",
-        path: "#",
+        name: "dashboard",
+        path: "/",
         icon: 'feather-airplay',
-        dropdownMenu: [
-            {
-                id: 1,
-                name: "CRM",
-                path: "/",
-                subdropdownMenu: false
-            },
-            {
-                id: 2,
-                name: "Analytics",
-                path: "/dashboards/analytics",
-                subdropdownMenu: false
-            }
-        ]
+        dropdownMenu: []
     },
     // {
     //     id: 1,
@@ -100,7 +87,7 @@ export const menuList = [
         id: 3,
         name: "proposal",
         path: "#",
-        icon: 'feather-sign',
+        icon: 'feather-user',
         dropdownMenu: [
             {
                 id: 1,
@@ -207,70 +194,6 @@ export const menuList = [
             }
         ]
     },
-    // {
-    //     id: 7,
-    //     name: "projects",
-    //     path: "#",
-    //     icon: 'feather-briefcase',
-    //     dropdownMenu: [
-    //         {
-    //             id: 1,
-    //             name: "Projects",
-    //             path: "/projects/list",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 2,
-    //             name: "Projects View",
-    //             path: "/projects/view",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 3,
-    //             name: "Projects Create",
-    //             path: "/projects/create",
-    //             subdropdownMenu: false
-    //         }
-    //     ]
-    // },
-    // {
-    //     id: 8,
-    //     name: "widgets",
-    //     path: "#",
-    //     icon: 'feather-layout',
-    //     dropdownMenu: [
-    //         {
-    //             id: 1,
-    //             name: "Lists",
-    //             path: "/widgets/lists",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 2,
-    //             name: "Tables",
-    //             path: "/widgets/tables",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 3,
-    //             name: "Charts",
-    //             path: "/widgets/charts",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 4,
-    //             name: "Statistics",
-    //             path: "/widgets/statistics",
-    //             subdropdownMenu: false
-    //         },
-    //         {
-    //             id: 5,
-    //             name: "Miscellaneous",
-    //             path: "/widgets/miscellaneous",
-    //             subdropdownMenu: false
-    //         },
-    //     ]
-    // },
     {
         id: 9,
         name: "settings",
@@ -279,22 +202,22 @@ export const menuList = [
         dropdownMenu: [
             {
                 id: 1,
-                name: "Ganeral",
+                name: "General",
                 path: "/settings/ganeral",
                 subdropdownMenu: false
             },
-            {
-                id: 2,
-                name: "SEO",
-                path: "/settings/seo",
-                subdropdownMenu: false
-            },
-            {
-                id: 3,
-                name: "Tags",
-                path: "/settings/tags",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 2,
+            //     name: "SEO",
+            //     path: "/settings/seo",
+            //     subdropdownMenu: false
+            // },
+            // {
+            //     id: 3,
+            //     name: "Tags",
+            //     path: "/settings/tags",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 4,
                 name: "Email",
@@ -319,18 +242,18 @@ export const menuList = [
                 path: "/settings/Support",
                 subdropdownMenu: false
             },
-            {
-                id: 8,
-                name: "Finance",
-                path: "/settings/finance",
-                subdropdownMenu: false
-            },
-            {
-                id: 9,
-                name: "Gateways",
-                path: "/settings/gateways",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 8,
+            //     name: "Finance",
+            //     path: "/settings/finance",
+            //     subdropdownMenu: false
+            // },
+            // {
+            //     id: 9,
+            //     name: "Gateways",
+            //     path: "/settings/gateways",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 10,
                 name: "Customers",
@@ -343,157 +266,17 @@ export const menuList = [
                 path: "/settings/localization",
                 subdropdownMenu: false
             },
-            {
-                id: 12,
-                name: "reCAPTCHA",
-                path: "/settings/recaptcha",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 12,
+            //     name: "reCAPTCHA",
+            //     path: "/settings/recaptcha",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 13,
                 name: "Miscellaneous",
                 path: "/settings/miscellaneous",
                 subdropdownMenu: false
-            },
-        ]
-    },
-    {
-        id: 10,
-        name: "authentication",
-        path: "#",
-        icon: 'feather-power',
-        dropdownMenu: [
-            {
-                id: 1,
-                name: "login",
-                path: "/authentication/login/creative",
-                subdropdownMenu: [
-                    // {
-                    //     id: 1,
-                    //     name: "Cover",
-                    //     path: "/authentication/login/cover",
-                    // },
-                    // {
-                    //     id: 2,
-                    //     name: "Minimal",
-                    //     path: "/authentication/login/minimal",
-                    // },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/login/creative",
-                    },
-                ]
-            },
-            {
-                id: 2,
-                name: "register",
-                path: "/authentication/register/creative",
-                subdropdownMenu: [
-                    // {
-                    //     id: 1,
-                    //     name: "Cover",
-                    //     path: "/authentication/register/cover",
-                    // },
-                    // {
-                    //     id: 2,
-                    //     name: "Minimal",
-                    //     path: "/authentication/register/minimal",
-                    // },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/register/creative",
-                    },
-                ]
-            },
-            {
-                id: 3,
-                name: "Error 404",
-                path: "#",
-                subdropdownMenu: [
-                    {
-                        id: 1,
-                        name: "Cover",
-                        path: "/authentication/404/cover",
-                    },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/404/minimal",
-                    },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/404/creative",
-                    },
-                ]
-            },
-            {
-                id: 4,
-                name: "Reset Pass",
-                path: "#",
-                subdropdownMenu: [
-                    {
-                        id: 1,
-                        name: "Cover",
-                        path: "/authentication/reset/cover",
-                    },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/reset/minimal",
-                    },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/reset/creative",
-                    },
-                ]
-            },
-            {
-                id: 5,
-                name: "Verify OTP",
-                path: "#",
-                subdropdownMenu: [
-                    {
-                        id: 1,
-                        name: "Cover",
-                        path: "/authentication/verify/cover",
-                    },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/verify/minimal",
-                    },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/verify/creative",
-                    },
-                ]
-            },
-            {
-                id: 6,
-                name: "Maintenance",
-                path: "#",
-                subdropdownMenu: [
-                    {
-                        id: 1,
-                        name: "Cover",
-                        path: "/authentication/maintenance/cover",
-                    },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/maintenance/minimal",
-                    },
-                    {
-                        id: 3,
-                        name: "Creative",
-                        path: "/authentication/maintenance/creative",
-                    },
-                ]
             },
         ]
     },

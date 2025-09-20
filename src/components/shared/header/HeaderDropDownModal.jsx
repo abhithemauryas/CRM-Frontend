@@ -92,7 +92,7 @@ const menuData = [
                 subSubMenu: [
                     { name: 'Cover', path: '/authentication/login/cover' },
                     { name: 'Minimal', path: '/authentication/login/minimal' },
-                    { name: 'Creative', path: '/authentication/login/creative' },
+                    { name: 'Creative', path: '/authentication/login' },
                 ],
             },
             {
@@ -100,7 +100,7 @@ const menuData = [
                 subSubMenu: [
                     { name: 'Cover', path: '/authentication/register/cover' },
                     { name: 'Minimal', path: '/authentication/register/minimal' },
-                    { name: 'Creative', path: '/authentication/register/creative' },
+                    { name: 'Creative', path: '/authentication/register' },
                 ],
             },
             {

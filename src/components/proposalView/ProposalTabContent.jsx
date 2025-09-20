@@ -84,7 +84,7 @@ const ProposalTabContent = () => {
 
   const fetchProposalProfile = async () => {
     try {
-      const response = await axios.get(`https://crm-backend-bxsr.onrender.com/proposal/${id}`);
+      const response = await axios.get(`http://localhost:4500/proposal/${id}`);
       const proposalData = response.data.proposal;
       console.log("Fetched Proposal Data:", proposalData);
       setProposal(proposalData);

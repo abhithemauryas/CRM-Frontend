@@ -54,7 +54,7 @@ const ProfileModal = () => {
 
     localStorage.removeItem("crmUser");
     setIsLoggedIn(false);
-    navigate("/authentication/login/creative"); // redirect to login page
+    navigate("/authentication/login"); // redirect to login page
   };
 
   return (
@@ -82,9 +82,6 @@ const ProfileModal = () => {
             <div>
               <h6 className="text-dark mb-0">
                 {user?.name || "Guest User"}
-                <span className="badge bg-soft-success text-success ms-1">
-                  PRO
-                </span>
               </h6>
               <span className="fs-12 fw-medium text-muted">
                 {user?.email || "guest@example.com"}
@@ -161,12 +158,12 @@ const ProfileModal = () => {
           </i>
           <span>Profile Details</span>
         </a>
-        <a href="#" className="dropdown-item">
+        {/* <a href="#" className="dropdown-item">
           <i>
             <FiActivity />
           </i>
           <span>Activity Feed</span>
-        </a>
+        </a> */}
         <a href="#" className="dropdown-item">
           <i>
             <FiDollarSign />
@@ -195,7 +192,7 @@ const ProfileModal = () => {
             <span>Logout</span>
           </Link>
         ) : (
-          <Link to="/authentication/login/creative" className="dropdown-item" onClick={handleLogout}>
+          <Link to="/authentication/login" className="dropdown-item" onClick={handleLogout}>
             <i>
               <FiLogOut />
             </i>

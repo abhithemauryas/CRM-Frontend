@@ -173,6 +173,28 @@ const projectRoalOptions = [
     { value: "owner", label: "Owner", color: "#ffa21d" },
     { value: "customer", label: "Customer", color: "#17c666" }
 ]
+const dispositionOptions = [
+  { value: "call-back", label: "Call back" },
+  { value: "follow-up", label: "Follow-up" },
+  { value: "hot-prospect", label: "Hot prospect" },
+  { value: "ringing-no-response", label: "Ringing no response" },
+  { value: "call-disconnected", label: "Call disconnected" },
+  { value: "switch-off", label: "Switch off" },
+  { value: "hang-up", label: "Hang up" },
+  { value: "not-reachable", label: "Not reachable" },
+  { value: "wrong-number", label: "Wrong number" },
+  { value: "out-station-number", label: "Out station number" },
+  { value: "appointment", label: "Appointment" },
+  { value: "app-confirm", label: "App confirm" },
+  { value: "app-not-confirm", label: "App not confirm" },
+  { value: "met-done", label: "Met done" },
+  { value: "met-not-done", label: "Met not done" },
+  { value: "after-met-follow-up", label: "After met follow-up" },
+  { value: "sales-closed", label: "Sales Closed" },
+];
+
+
+
 export {
     propsalRelatedOptions,
     propsalDiscountOptions,
@@ -194,5 +216,6 @@ export {
     projectBillingOptions,
     projectNotificationsOptions,
     projectRoalOptions,
-    taskTypeOptions
+    taskTypeOptions,
+    dispositionOptions
 }

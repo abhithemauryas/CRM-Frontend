@@ -102,7 +102,7 @@ const LeadsCreateContent = () => {
         assigned.map((a) => a.value)
       );
       const response = await axios.post(
-        "https://crm-backend-bxsr.onrender.com/lead/create",
+        "http://localhost:4500/lead/create",
         formData,
         config
       );
@@ -157,7 +157,7 @@ const LeadsCreateContent = () => {
     try {
       setExcelUploadLoading(true);
       const response = await axios.post(
-        "https://crm-backend-bxsr.onrender.com/lead/import-excel",
+        "http://localhost:4500/lead/import-excel",
         formData,
         {
           headers: {
@@ -199,7 +199,7 @@ const LeadsCreateContent = () => {
     if (!id) return;
     const fetchLeadProfile = async () => {
       try {
-        const response = await axios.get(`https://crm-backend-bxsr.onrender.com/lead/${id}`);
+        const response = await axios.get(`http://localhost:4500/lead/${id}`);
         const leadData = response.data.lead;
         setLeadData(leadData);
         setFields({
@@ -303,7 +303,7 @@ const LeadsCreateContent = () => {
         city: cityOption?.value || fields.citys,
       };
       await axios.put(
-        `https://crm-backend-bxsr.onrender.com/lead/update/${id}`,
+        `http://localhost:4500/lead/update/${id}`,
         formData,
         {
           headers: {
@@ -323,7 +323,7 @@ const LeadsCreateContent = () => {
     const fetchData = async () => {
       try {
         const { data: users } = await axios.get(
-          "https://crm-backend-bxsr.onrender.com/employee/options"
+          "http://localhost:4500/employee/options"
         );
         console.log("users", users);
         setTaskAssigneeOptions(

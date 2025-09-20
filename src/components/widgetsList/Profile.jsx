@@ -20,7 +20,7 @@ const Profile = () => {
   });
   const fetchCustomerProfile = async () => {
     try {
-      const response = await axios.get(`https://crm-backend-bxsr.onrender.com/customer/${id}`);
+      const response = await axios.get(`http://localhost:4500/customer/${id}`);
       const customer = response.data.customer;
       setData(customer);
       setFormData({
@@ -53,7 +53,7 @@ const Profile = () => {
               "Authorization": "Bearer " + localStorage.getItem('crmToken')
           },    
         }
-     const res= await axios.delete(`https://crm-backend-bxsr.onrender.com/customer/delete/${id}`,config);
+     const res= await axios.delete(`http://localhost:4500/customer/delete/${id}`,config);
        await Swal.fire({
        title: "Deleted!",
      text: res.data.message,
@@ -98,10 +98,10 @@ const Profile = () => {
           </div>
           <div className="mb-4">
             <a href="#" className="fs-14 fw-bold d-block">
-              {data?.name || "N/A"}{" "}
+              {data?.name || "Loading..."}{" "}
             </a>
             <a href="#" className="fs-12 fw-normal text-muted d-block">
-              {data?.email || "N/A"}
+              {data?.email || "Loading..."}
             </a>
           </div>
           {/* <div className="fs-12 fw-normal text-muted text-center d-flex flex-wrap gap-3 mb-4">
@@ -191,7 +191,7 @@ const Profile = () => {
         className="w-50 btn btn-success"
         onClick={async () => {
           try {
-            await axios.put(`https://crm-backend-bxsr.onrender.com/customer/${id}`, formData);
+            await axios.put(`http://localhost:4500/customer/${id}`, formData);
             setEditMode(false);
             fetchCustomerProfile(); // Update fresh data
           } catch (error) {

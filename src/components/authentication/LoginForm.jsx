@@ -22,13 +22,16 @@ const LoginForm = ({ registerPath, resetPath }) => {
       },
     };
     const response = await axios.post(
-      "https://crm-backend-bxsr.onrender.com/user/login",
+      "http://localhost:4500/user/login",
       formData,
       config
     );
-    const {token,userId,name,email}= response.data;
-     localStorage.setItem("crmToken", token);
+    const {token,userId,name,email,role}= response.data;
+    console.log(role, response.data)
+    localStorage.setItem("crmToken", token);
     localStorage.setItem("crmUser", JSON.stringify({ name, email, userId }));
+    // localStorage.setItem("crmUser", JSON.stringify({ name, email, userId }));
+    localStorage.crmRole = role;
 
     console.log("User logged in successfully:", response.data);
     // alert("User logged in successfully");

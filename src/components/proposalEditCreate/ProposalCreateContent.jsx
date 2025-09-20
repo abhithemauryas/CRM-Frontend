@@ -63,7 +63,7 @@ const ProposalCreateContent = () => {
     const fetchData = async () => {
       try {
         // lead options fill-up
-        const { data } = await axios.get("https://crm-backend-bxsr.onrender.com/lead/options");
+        const { data } = await axios.get("http://localhost:4500/lead/options");
         setPropasalLeadOptions(
           data.leads.map((lead) => ({
             value: lead._id,
@@ -72,7 +72,7 @@ const ProposalCreateContent = () => {
         );
         // Assignee options fill-up
         const { data: users } = await axios.get(
-          "https://crm-backend-bxsr.onrender.com/employee/options"
+          "http://localhost:4500/employee/options"
         );
         console.log(users);
         setTaskAssigneeOptions(
@@ -89,7 +89,7 @@ const ProposalCreateContent = () => {
   }, []);
 
   const fetchLeadDetails = async (objID) => {
-    const { data } = await axios.get(`https://crm-backend-bxsr.onrender.com/lead/${objID}`);
+    const { data } = await axios.get(`http://localhost:4500/lead/${objID}`);
     setFields({
       ...fields,
       addressLine1: data.lead.address,
@@ -153,7 +153,7 @@ const ProposalCreateContent = () => {
         },
       };
       const response = await axios.post(
-        "https://crm-backend-bxsr.onrender.com/proposal/create",
+        "http://localhost:4500/proposal/create",
         formData,
         config
       );

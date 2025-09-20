@@ -83,7 +83,7 @@ const ProposalEditContent = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(
-          `https://crm-backend-bxsr.onrender.com/proposal/${id}`
+          `http://localhost:4500/proposal/${id}`
         );
         const proposal = data.proposal;
 
@@ -165,7 +165,7 @@ const ProposalEditContent = () => {
     };
 
     try {
-      await axios.put(`https://crm-backend-bxsr.onrender.com/proposal/${id}`, updatedData);
+      await axios.put(`http://localhost:4500/proposal/${id}`, updatedData);
       alert("Proposal updated successfully!");
       navigate("/proposal/list");
     } catch (error) {

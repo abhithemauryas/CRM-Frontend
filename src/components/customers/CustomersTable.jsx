@@ -22,7 +22,7 @@ import { confirmDelete } from "@/utils/confirmDelete";
 
 const updateStatus = async (option, id) => {
   const { data } = await axios.get(
-    `https://crm-backend-bxsr.onrender.com/customer-status/${id}/${option.value}`
+    `http://localhost:4500/customer-status/${id}/${option.value}`
   );
 };
 
@@ -66,7 +66,7 @@ const CustomersTable = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get("https://crm-backend-bxsr.onrender.com/find/customer");
+      const response = await axios.get("http://localhost:4500/find/customer");
       const fetched = response.data.customers;
       console.log("Fetched customers:", fetched);
 
@@ -121,7 +121,7 @@ const CustomersTable = () => {
       Authorization: "Bearer " + localStorage.getItem("crmToken"),
     },
   };
-  await axios.delete(`https://crm-backend-bxsr.onrender.com/customer/delete/${customerId}`, config);
+  await axios.delete(`http://localhost:4500/customer/delete/${customerId}`, config);
   setCustomerData(prevData => prevData.filter(customer => customer._id !== customerId));
 await fetchCustomer();
 

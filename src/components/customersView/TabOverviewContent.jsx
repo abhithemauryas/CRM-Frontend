@@ -33,7 +33,7 @@ const TabOverviewContent = () => {
 
   const fetchCustomerProfile = async () => {
     try {
-      const response = await axios.get(`https://crm-backend-bxsr.onrender.com/customer/${id}`);
+      const response = await axios.get(`http://localhost:4500/customer/${id}`);
       const customer = response.data.customer;
       setCustomer(customer);
       setFormData({
@@ -64,7 +64,7 @@ const TabOverviewContent = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`https://crm-backend-bxsr.onrender.com/customer/${id}`, formData, {
+      await axios.put(`http://localhost:4500/customer/${id}`, formData, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + localStorage.getItem('crmToken')

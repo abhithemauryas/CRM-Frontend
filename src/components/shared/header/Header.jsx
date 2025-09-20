@@ -1,12 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { FiAlignLeft, FiArrowLeft, FiArrowRight, FiChevronRight, FiMaximize, FiMinimize, FiMoon, FiPlus, FiSun, } from "react-icons/fi";
-import LanguagesModal from './LanguagesModal';
+import { FiAlignLeft, FiArrowLeft, FiArrowRight, FiMaximize, FiMinimize, FiMoon, FiSun } from "react-icons/fi";
 import NotificationsModal from './NotificationsModal';
 import ProfileModal from './ProfileModal';
 import SearchModal from './SearchModal';
-import TimesheetsModal from './TimesheetsModal';
-import HeaderDropDownModal from './HeaderDropDownModal';
-import MegaMenu from './megaManu/MegaMenu';
 import { NavigationContext } from '../../../contentApi/navigationProvider';
 
 
@@ -175,8 +171,6 @@ const Header = () => {
                         </div>
                         {/* <!--! [Start] nxl-lavel-mega-menu-wrapper !--> */}
                         <div className="nxl-lavel-mega-menu-wrapper d-flex gap-3">
-                            <HeaderDropDownModal />
-                            <MegaMenu />
                         </div>
                     </div>
                 </div>
@@ -185,7 +179,6 @@ const Header = () => {
                 <div className="header-right ms-auto">
                     <div className="d-flex align-items-center">
                         <SearchModal />
-                        <LanguagesModal />
                         <div className="nxl-h-item d-none d-sm-flex" >
                             <div className="full-screen-switcher">
                                 <span className="nxl-head-link me-0">
@@ -202,7 +195,6 @@ const Header = () => {
                                 <FiSun size={20} />
                             </div>
                         </div>
-                        <TimesheetsModal />
                         <NotificationsModal />
                         <ProfileModal />
                     </div>

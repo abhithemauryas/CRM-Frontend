@@ -49,15 +49,15 @@ const Menus = () => {
                         key={id}
                         onClick={(e) => handleMainMenu(e, name)}
                         className={`nxl-item nxl-hasmenu ${activeParent === name ? "active nxl-trigger" : ""}`}
-        >
+                    >
                         <Link to={path} className="nxl-link text-capitalize">
                             <span className="nxl-micon"> {getIcon(icon)} </span>
                             <span className="nxl-mtext" style={{ paddingLeft: "2.5px" }}>
                                 {name}
                             </span>
-                            <span className="nxl-arrow fs-16">
+                            {dropdownMenu.length ? <span className="nxl-arrow fs-16">
                                 <FiChevronRight />
-                            </span>
+                            </span>: null}
                         </Link>
                         <ul
                             className={`nxl-submenu ${openDropdown === name ? "nxl-menu-visible" : "nxl-menu-hidden"}`}

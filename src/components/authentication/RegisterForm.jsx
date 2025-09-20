@@ -51,7 +51,7 @@ const RegisterForm = ({ path }) => {
           "Content-Type": "application/json",
         },
       };
-      const response = await axios.post("https://crm-backend-bxsr.onrender.com/user/register", formData, config);
+      const response = await axios.post("http://localhost:4500/user/register", formData, config);
       console.log("Response from registration:", response.data);
       response.data;
       console.log("User registered successfully:", response.data);
@@ -80,7 +80,6 @@ const RegisterForm = ({ path }) => {
   return (
     <>
       <h2 className="fs-20 fw-bolder mb-4">Register</h2>
-      {/* <h4 className="fs-13 fw-bold mb-2">Manage all your Duralux crm</h4> */}
       <p className="fs-12 fw-medium text-muted">
         Let's get you all setup, so you can verify your personal account and
         begine setting up your profile.
@@ -236,7 +235,7 @@ const RegisterForm = ({ path }) => {
               htmlFor="receiveMial"
               style={{ fontWeight: "400 !important" }}
             >
-              Yes, I wnat to receive Duralux community emails
+              Yes, I want to receive Durex community emails
             </label>
           </div>
           <div className="custom-control custom-checkbox">

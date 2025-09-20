@@ -44,29 +44,6 @@ export const componentsList = [
                 comp_name: "Documentations",
             },
         ]
-    },
-    {
-        title: "Authentication",
-        col: [
-            {
-                comp_name: "Login",
-            },
-            {
-                comp_name: "Regiser",
-            },
-            {
-                comp_name: "Error-404",
-            },
-            {
-                comp_name: "Reset Pass",
-            },
-            {
-                comp_name: "Verify OTP",
-            },
-            {
-                comp_name: "Maintenance",
-            },
-        ]
     }
 ]
 
@@ -212,11 +189,11 @@ export const authenticationPageList = [
         col: [
             {
                 page_name: "Login",
-                path: "/authentication/login/creative"
+                path: "/authentication/login"
             },
             {
                 page_name: "Regiser",
-                path: "/authentication/regiser/creative"
+                path: "/authentication/regiser"
             },
             {
                 page_name: "Error-404",
